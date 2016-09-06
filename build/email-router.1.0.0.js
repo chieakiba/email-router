@@ -52,7 +52,7 @@
 	var IndexRoute = router.IndexRoute;
 	var Router = router.Router;
 	var Route = router.Route;
-	var hashHistory = router.hashHistory;
+	var browserHistory = router.browserHistory;
 	var Link = router.Link;
 	
 	var EMAILS = {
@@ -90,23 +90,50 @@
 	    }
 	};
 	
-	var EmailList = function EmailList(props) {
+	var Email = function Email(props) {
 	
-	    return Object.keys(props.EMAILS).map(function (name) {
+	    return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	            'h1',
+	            null,
+	            'Here are your emails'
+	        ),
+	        React.createElement(
+	            'h2',
+	            null,
+	            props.children
+	        )
+	    );
+	};
+	
+	var EmailList = function EmailList(props) {
+	    var emails = Object.keys(props.emails).map(function (name) {
+	        var email = props.emails[name];
 	        return React.createElement(
 	            'div',
 	            null,
 	            React.createElement(
-	                Link,
-	                { to: '/email/' },
-	                name
+	                'div',
+	                null,
+	                props.inbox
+	            ),
+	            React.createElement(
+	                'div',
+	                null,
+	                props.spam
 	            )
 	        );
 	    });
 	};
 	
+	var EmailListContainer = function EmailListContainer() {
+	    return React.createElement(EmailList, { emails: EMAILS });
+	};
+	
 	var MessageList = function MessageList(props) {
-	    var email_messages = EMAILS[props.params.messages];
+	    var email_messages = EMAILS[props.params.EmailList];
 	
 	    var keys = Object.keys(email_messages);
 	
@@ -140,6 +167,16 @@
 	    props.params.message_id;
 	
 	    EMAILS[props.params.email_message][props.params.message_id];
+	
+	    return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	            Link,
+	            { to: '/email/' + props.children },
+	            props.children
+	        )
+	    );
 	};
 	
 	var EmailApp = function EmailApp(props) {
@@ -149,20 +186,20 @@
 	    return React.createElement(
 	        'div',
 	        null,
-	        React.createElement(MessageList, { messages: messages }),
+	        React.createElement('div', { emails: EMAILS }),
 	        props.children
 	    );
 	};
 	
 	var routes = React.createElement(
 	    Router,
-	    { history: hashHistory },
+	    { history: browserHistory },
 	    React.createElement(
 	        Route,
-	        { path: '/email', component: EmailApp },
-	        React.createElement(IndexRoute, { component: EmailList }),
-	        React.createElement(Route, { path: ':email_name', component: MessageList }),
-	        React.createElement(Route, { path: ':message_id', component: Message })
+	        { path: '/', component: EmailApp },
+	        React.createElement(IndexRoute, { component: EmailListContainer }),
+	        React.createElement(Route, { path: ':inbox', component: MessageList }),
+	        React.createElement(Route, { path: ':spam', component: Message })
 	    )
 	);
 	

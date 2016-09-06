@@ -4,7 +4,7 @@ var router = require('react-router');
 var IndexRoute = router.IndexRoute;
 var Router = router.Router;
 var Route = router.Route;
-var hashHistory = router.hashHistory;
+var browserHistory = router.browserHistory;
 var Link = router.Link;
 
 var EMAILS = {
@@ -42,19 +42,34 @@ var EMAILS = {
     }
 };
 
-var EmailList = function(props) {
+var Email = function(props) {
 
     return (
-        Object.keys(props.EMAILS).map(function(name) {
-            return <div>
-                <Link to={'/email/'}>{name}</Link>
-            </div>;
-        })
+        <div>
+            <h1>Here are your emails</h1>
+            <h2>{props.children}</h2>
+        </div>
     );
 };
 
+var EmailList = function(props) {
+    var emails = Object.keys(props.emails).map(function(name) {
+        var email = props.emails[name];
+        return (
+        <div>
+            <div>{props.inbox}</div>
+            <div>{props.spam}</div>
+        </div>
+        );
+    });
+};
+
+var EmailListContainer = function() {
+    return <EmailList emails={EMAILS} />;
+};
+
 var MessageList = function(props) {
-    var email_messages = EMAILS[props.params.messages];
+    var email_messages = EMAILS[props.params.EmailList]
 
     var keys = Object.keys(email_messages);
 
@@ -77,7 +92,13 @@ var Message = function(props) {
     var email_message = props.params.email_message
     props.params.message_id
 
-    EMAILS[props.params.email_message][props.params.message_id]
+    EMAILS[props.params.email_message][props.params.message_id];
+
+    return (
+        <div>
+            <Link to={'/email/' + props.children}>{props.children}</Link>
+        </div>
+    );
 };
 
 var EmailApp = function(props) {
@@ -86,18 +107,18 @@ var EmailApp = function(props) {
 
     return (
         <div>
-            <MessageList messages={messages}/>
+            <div emails={EMAILS}/>
             {props.children}
         </div>
     );
 };
 
 var routes = (
-    <Router history={hashHistory}>
-        <Route path='/email' component={EmailApp}>
-           <IndexRoute component={EmailList}/>
-            <Route path=':email_name' component={MessageList}/>
-            <Route path=':message_id' component={Message}/>
+    <Router history={browserHistory}>
+        <Route path='/' component={EmailApp}>
+           <IndexRoute component={EmailListContainer}/>
+            <Route path=':inbox' component={MessageList}/>
+            <Route path=':spam' component={Message}/>
         </Route>
     </Router>
 );
