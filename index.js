@@ -4,7 +4,7 @@ var router = require('react-router');
 var IndexRoute = router.IndexRoute;
 var Router = router.Router;
 var Route = router.Route;
-var browserHistory = router.browserHistory;
+var hashHistory = router.hashHistory;
 var Link = router.Link;
 
 var EMAILS = {
@@ -42,87 +42,49 @@ var EMAILS = {
     }
 };
 
-var Email = function(props) {
+var App = function(props) {
+  return (
+    <div>
+      <h1>Emails</h1>
+      <h3>{props.children}</h3>
+    </div>
+  );
+};
 
-    return (
-        <div>
-            <h1>Here are your emails</h1>
-            <h2>{props.children}</h2>
-        </div>
-    );
+var Emails = function(props) {
+  return (
+    <div>
+      {props.children}
+    </div>
+  );
 };
 
 var EmailList = function(props) {
-    var emails = Object.keys(props.emails).map(function(name) {
-        var email = props.emails[name];
-        return (
-        <div>
-            <div>{props.inbox}</div>
-            <div>{props.spam}</div>
-        </div>
-        );
-    });
+  var emails = Object.keys(props.emails).map(function(name, index) {
+    var email = props.emails[name];
+    return (
+      <li key={index}>
+        <Emails>{name}</Emails>
+      </li>
+    );
+  });
+  return (
+    <ul>
+      {emails}
+    </ul>
+  );
 };
 
 var EmailListContainer = function() {
-    return <EmailList emails={EMAILS} />;
-};
-
-var MessageList = function(props) {
-    var email_messages = EMAILS[props.params.EmailList]
-
-    var keys = Object.keys(email_messages);
-
-    return (
-        <div>
-            <div>
-                {keys.map(function(key) {
-                    var email_message = email_messages[key];
-                    return <div>{email_message.from} - {email_message.title}</div>;
-                })}
-            </div>
-            <div>
-                {props.children}
-            </div>
-        </div>
-    );
-};
-
-var Message = function(props) {
-    var email_message = props.params.email_message
-    props.params.message_id
-
-    EMAILS[props.params.email_message][props.params.message_id];
-
-    return (
-        <div>
-            <Link to={'/email/' + props.children}>{props.children}</Link>
-        </div>
-    );
-};
-
-var EmailApp = function(props) {
-    var emails = EMAILS;
-    var messages = EMAILS[props.params.email_message];
-
-    return (
-        <div>
-            <div emails={EMAILS}/>
-            {props.children}
-        </div>
-    );
+  return <EmailList emails={EMAILS}/>;
 };
 
 var routes = (
-    <Router history={browserHistory}>
-        <Route path='/' component={EmailApp}>
-           <IndexRoute component={EmailListContainer}/>
-            <Route path=':inbox' component={MessageList}/>
-            <Route path=':spam' component={Message}/>
-        </Route>
-    </Router>
+  <Router history={hashHistory}>
+    <Route path='/' component={EmailListContainer}/>
+  </Router>
 );
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     ReactDOM.render(routes, document.getElementById('emails'));
 })

@@ -52,159 +52,101 @@
 	var IndexRoute = router.IndexRoute;
 	var Router = router.Router;
 	var Route = router.Route;
-	var browserHistory = router.browserHistory;
+	var hashHistory = router.hashHistory;
 	var Link = router.Link;
 	
 	var EMAILS = {
-	    inbox: {
-	        0: {
-	            id: 0,
-	            from: "billg@microsoft.com",
-	            to: "TeamWoz@Woz.org",
-	            title: "Possible work opportunity",
-	            content: "Dear Woz.  Fancy a job at Mister Softee?  Bill x"
-	        },
-	        1: {
-	            id: 1,
-	            from: "zuck@facebook.com",
-	            to: "TeamWoz@Woz.org",
-	            title: "Do you know PHP?",
-	            content: "Dear Woz.  We are in need of a PHP expert.  Fast.  Zuck x"
-	        }
+	  inbox: {
+	    0: {
+	      id: 0,
+	      from: "billg@microsoft.com",
+	      to: "TeamWoz@Woz.org",
+	      title: "Possible work opportunity",
+	      content: "Dear Woz.  Fancy a job at Mister Softee?  Bill x"
 	    },
-	    spam: {
-	        0: {
-	            id: 0,
-	            from: "ChEaPFl1ghTZ@hotmail.com",
-	            to: "TeamWoz@Woz.org",
-	            title: "WaNt CHEEp FlitZ",
-	            content: "Theyre CheEp"
-	        },
-	        1: {
-	            id: 1,
-	            from: "NiKEAIRJordanZ@hotmail.com",
-	            to: "TeamWoz@Woz.org",
-	            title: "JorDanz For SAle",
-	            content: "Theyre REELY CheEp"
-	        }
+	    1: {
+	      id: 1,
+	      from: "zuck@facebook.com",
+	      to: "TeamWoz@Woz.org",
+	      title: "Do you know PHP?",
+	      content: "Dear Woz.  We are in need of a PHP expert.  Fast.  Zuck x"
 	    }
+	  },
+	  spam: {
+	    0: {
+	      id: 0,
+	      from: "ChEaPFl1ghTZ@hotmail.com",
+	      to: "TeamWoz@Woz.org",
+	      title: "WaNt CHEEp FlitZ",
+	      content: "Theyre CheEp"
+	    },
+	    1: {
+	      id: 1,
+	      from: "NiKEAIRJordanZ@hotmail.com",
+	      to: "TeamWoz@Woz.org",
+	      title: "JorDanz For SAle",
+	      content: "Theyre REELY CheEp"
+	    }
+	  }
 	};
 	
-	var Email = function Email(props) {
+	var App = function App(props) {
+	  return React.createElement(
+	    'div',
+	    null,
+	    React.createElement(
+	      'h1',
+	      null,
+	      'Emails'
+	    ),
+	    React.createElement(
+	      'h3',
+	      null,
+	      props.children
+	    )
+	  );
+	};
 	
-	    return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	            'h1',
-	            null,
-	            'Here are your emails'
-	        ),
-	        React.createElement(
-	            'h2',
-	            null,
-	            props.children
-	        )
-	    );
+	var Emails = function Emails(props) {
+	  return React.createElement(
+	    'div',
+	    null,
+	    props.children
+	  );
 	};
 	
 	var EmailList = function EmailList(props) {
-	    var emails = Object.keys(props.emails).map(function (name) {
-	        var email = props.emails[name];
-	        return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	                'div',
-	                null,
-	                props.inbox
-	            ),
-	            React.createElement(
-	                'div',
-	                null,
-	                props.spam
-	            )
-	        );
-	    });
+	  var emails = Object.keys(props.emails).map(function (name, index) {
+	    var email = props.emails[name];
+	    return React.createElement(
+	      'li',
+	      { key: index },
+	      React.createElement(
+	        Emails,
+	        null,
+	        name
+	      )
+	    );
+	  });
+	  return React.createElement(
+	    'ul',
+	    null,
+	    emails
+	  );
 	};
 	
 	var EmailListContainer = function EmailListContainer() {
-	    return React.createElement(EmailList, { emails: EMAILS });
-	};
-	
-	var MessageList = function MessageList(props) {
-	    var email_messages = EMAILS[props.params.EmailList];
-	
-	    var keys = Object.keys(email_messages);
-	
-	    return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	            'div',
-	            null,
-	            keys.map(function (key) {
-	                var email_message = email_messages[key];
-	                return React.createElement(
-	                    'div',
-	                    null,
-	                    email_message.from,
-	                    ' - ',
-	                    email_message.title
-	                );
-	            })
-	        ),
-	        React.createElement(
-	            'div',
-	            null,
-	            props.children
-	        )
-	    );
-	};
-	
-	var Message = function Message(props) {
-	    var email_message = props.params.email_message;
-	    props.params.message_id;
-	
-	    EMAILS[props.params.email_message][props.params.message_id];
-	
-	    return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	            Link,
-	            { to: '/email/' + props.children },
-	            props.children
-	        )
-	    );
-	};
-	
-	var EmailApp = function EmailApp(props) {
-	    var emails = EMAILS;
-	    var messages = EMAILS[props.params.email_message];
-	
-	    return React.createElement(
-	        'div',
-	        null,
-	        React.createElement('div', { emails: EMAILS }),
-	        props.children
-	    );
+	  return React.createElement(EmailList, { emails: EMAILS });
 	};
 	
 	var routes = React.createElement(
-	    Router,
-	    { history: browserHistory },
-	    React.createElement(
-	        Route,
-	        { path: '/', component: EmailApp },
-	        React.createElement(IndexRoute, { component: EmailListContainer }),
-	        React.createElement(Route, { path: ':inbox', component: MessageList }),
-	        React.createElement(Route, { path: ':spam', component: Message })
-	    )
+	  Router,
+	  { history: hashHistory },
+	  React.createElement(Route, { path: '/', component: EmailListContainer })
 	);
 	
 	document.addEventListener('DOMContentLoaded', function () {
-	    ReactDOM.render(routes, document.getElementById('emails'));
+	  ReactDOM.render(routes, document.getElementById('emails'));
 	});
 
 /***/ },
@@ -326,25 +268,40 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 	
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
 	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
 	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
 	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
 	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
 	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
 	        return setTimeout(fun, 0);
 	    }
 	    try {
@@ -365,6 +322,11 @@
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
 	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
 	        return clearTimeout(marker);
 	    }
 	    try {
