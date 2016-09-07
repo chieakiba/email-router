@@ -54,7 +54,7 @@ var App = function(props) {
 var Emails = function(props) {
   return (
     <div>
-      <Link to={'/inbox/' + props.children}>
+      <Link to={'/emails/' + props.children}>
         {props.children}
       </Link>
     </div>
@@ -64,6 +64,7 @@ var Emails = function(props) {
 var EmailList = function(props) {
   var emails = Object.keys(props.emails).map(function(name, index) {
     var email = props.emails[name];
+    console.log(props);
     return (
       <li key={index}>
         <Emails name={name}>{name}</Emails>
@@ -81,6 +82,38 @@ var EmailListContainer = function() {
   return <EmailList emails={EMAILS}/>;
 };
 
+var Messages = function(props) {
+  return (
+    <div>
+        <Link to={'/inbox/' + props.children}>
+          {props.children}
+        </Link>
+    </div>
+  );
+};
+
+var MessageList = function(props) {
+  var messages = EMAILS[props.params.emails];
+  var message = Object.keys(messages).map(function(message, index) {
+    var keys = props.message[message];
+    console.log(message);
+    return (
+      <li key={index}>
+        <Messages message={message}>{message}</Messages>
+      </li>
+    );
+  });
+  return (
+    <ul>
+      {messages}
+    </ul>
+  );
+};
+
+var MessageListContainer = function() {
+  return <MessageList message={messages}/>
+};
+
 var App = function(props) {
   return (
     <div>
@@ -94,6 +127,8 @@ var routes = (
   <Router history={hashHistory}>
     <Route path='/' component={App}>
       <IndexRoute component={EmailListContainer}/>
+      <Route path=':message' component={MessageListContainer}>
+      </Route>
     </Route>
   </Router>
 );

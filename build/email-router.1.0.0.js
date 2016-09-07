@@ -113,7 +113,7 @@
 	    null,
 	    React.createElement(
 	      Link,
-	      { to: '/inbox/' + props.children },
+	      { to: '/emails/' + props.children },
 	      props.children
 	    )
 	  );
@@ -122,6 +122,7 @@
 	var EmailList = function EmailList(props) {
 	  var emails = Object.keys(props.emails).map(function (name, index) {
 	    var email = props.emails[name];
+	    console.log(props);
 	    return React.createElement(
 	      'li',
 	      { key: index },
@@ -141,6 +142,44 @@
 	
 	var EmailListContainer = function EmailListContainer() {
 	  return React.createElement(EmailList, { emails: EMAILS });
+	};
+	
+	var Messages = function Messages(props) {
+	  return React.createElement(
+	    'div',
+	    null,
+	    React.createElement(
+	      Link,
+	      { to: '/inbox/' + props.children },
+	      props.children
+	    )
+	  );
+	};
+	
+	var MessageList = function MessageList(props) {
+	  var messages = EMAILS[props.params.emails];
+	  var message = Object.keys(messages).map(function (message, index) {
+	    var keys = props.message[message];
+	    console.log(message);
+	    return React.createElement(
+	      'li',
+	      { key: index },
+	      React.createElement(
+	        Messages,
+	        { message: message },
+	        message
+	      )
+	    );
+	  });
+	  return React.createElement(
+	    'ul',
+	    null,
+	    messages
+	  );
+	};
+	
+	var MessageListContainer = function MessageListContainer() {
+	  return React.createElement(MessageList, { message: messages });
 	};
 	
 	var App = function App(props) {
@@ -166,7 +205,8 @@
 	  React.createElement(
 	    Route,
 	    { path: '/', component: App },
-	    React.createElement(IndexRoute, { component: EmailListContainer })
+	    React.createElement(IndexRoute, { component: EmailListContainer }),
+	    React.createElement(Route, { path: ':message', component: MessageListContainer })
 	  )
 	);
 	
