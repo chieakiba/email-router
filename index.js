@@ -54,7 +54,9 @@ var App = function(props) {
 var Emails = function(props) {
   return (
     <div>
-      {props.children}
+      <Link to={'/inbox/' + props.children}>
+        {props.children}
+      </Link>
     </div>
   );
 };

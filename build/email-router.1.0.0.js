@@ -111,7 +111,11 @@
 	  return React.createElement(
 	    'div',
 	    null,
-	    props.children
+	    React.createElement(
+	      Link,
+	      { to: '/inbox/' + props.children },
+	      props.children
+	    )
 	  );
 	};
 	
