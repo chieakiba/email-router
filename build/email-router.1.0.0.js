@@ -150,37 +150,87 @@
 	    null,
 	    React.createElement(
 	      Link,
-	      { to: '/inbox/' + props.children },
+	      { to: '/emails/' + props.target + '/' + props.id },
 	      props.children
 	    )
 	  );
 	};
 	
+	var Message = function Message(props) {
+	  console.log('what does this props in var Message show?', props.params);
+	  var singleMessage = EMAILS[props.params.keyTarget][props.params.id];
+	  console.log('Single message', singleMessage);
+	  return React.createElement(
+	    'div',
+	    null,
+	    React.createElement(
+	      'h1',
+	      null,
+	      singleMessage.title
+	    ),
+	    React.createElement(
+	      'p',
+	      null,
+	      singleMessage.content
+	    )
+	  );
+	};
+	
 	var MessageList = function MessageList(props) {
-	  var messages = EMAILS[props.params.emails];
-	  var message = Object.keys(messages).map(function (message, index) {
-	    var keys = props.message[message];
-	    console.log(message);
+	  console.log('what is in this Message List props?', props);
+	
+	  var messages = props.message;
+	  console.log(messages);
+	  var messageArray = Object.keys(messages).map(function (message, index) {
+	    var messageObject = props.message[message];
+	    console.log('Message object', messageObject);
 	    return React.createElement(
 	      'li',
 	      { key: index },
 	      React.createElement(
 	        Messages,
-	        { message: message },
-	        message
+	        { target: props.target, id: messageObject.id, message: messageObject },
+	        messageObject.title
 	      )
 	    );
 	  });
+	  console.log('Message array', messageArray);
 	  return React.createElement(
 	    'ul',
 	    null,
-	    messages
+	    messageArray
 	  );
 	};
 	
-	var MessageListContainer = function MessageListContainer() {
-	  return React.createElement(MessageList, { message: messages });
+	var MessageListContainer = function MessageListContainer(props) {
+	  console.log('what is in this props from the Message List Container?', props);
+	  var messages = EMAILS[props.params.keyTarget];
+	  console.log('Messages', messages);
+	  return React.createElement(MessageList, { target: props.params.keyTarget, message: messages });
 	};
+	
+	//Just have this here for reference
+	// var MessageList = function(props) {
+	//   var messages = props.message;
+	//   var message = Object.keys(messages).map(function(message, index) {
+	//     var keys = props.message[message];
+	//     console.log(message);
+	//     return (
+	//       <li key={index}>
+	//         <Messages message={message}>{message}</Messages>
+	//       </li>
+	//     );
+	//   });
+	//   return (
+	//     <ul>
+	//       {messages}
+	//     </ul>
+	//   );
+	// };
+	
+	// var MessageListContainer = function() {
+	//   return <MessageList message={messages}/>
+	// };
 	
 	var App = function App(props) {
 	  return React.createElement(
@@ -206,7 +256,9 @@
 	    Route,
 	    { path: '/', component: App },
 	    React.createElement(IndexRoute, { component: EmailListContainer }),
-	    React.createElement(Route, { path: ':message', component: MessageListContainer })
+	    React.createElement(Route, { path: ':message', component: MessageListContainer }),
+	    React.createElement(Route, { path: 'emails/:keyTarget', component: MessageListContainer }),
+	    React.createElement(Route, { path: 'emails/:keyTarget/:id', component: Message })
 	  )
 	);
 	

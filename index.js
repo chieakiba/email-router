@@ -85,34 +85,74 @@ var EmailListContainer = function() {
 var Messages = function(props) {
   return (
     <div>
-        <Link to={'/inbox/' + props.children}>
+        <Link to={'/emails/' + props.target + '/' + props.id}>
           {props.children}
         </Link>
     </div>
   );
 };
 
-var MessageList = function(props) {
-  var messages = EMAILS[props.params.emails];
-  var message = Object.keys(messages).map(function(message, index) {
-    var keys = props.message[message];
-    console.log(message);
-    return (
-      <li key={index}>
-        <Messages message={message}>{message}</Messages>
-      </li>
-    );
-  });
+var Message = function(props) {
+  console.log('what does this props in var Message show?', props.params);
+  var singleMessage = EMAILS[props.params.keyTarget][props.params.id];
+  console.log('Single message', singleMessage);
   return (
-    <ul>
-      {messages}
-    </ul>
+    <div>
+      <h1>{singleMessage.title}</h1>
+      <p>{singleMessage.content}</p>
+    </div>
   );
 };
 
-var MessageListContainer = function() {
-  return <MessageList message={messages}/>
+var MessageList = function(props) {
+  console.log('what is in this Message List props?', props);
+
+  var messages = props.message;
+  console.log(messages);
+  var messageArray = Object.keys(messages).map(function(message, index) {
+    var messageObject = props.message[message];
+    console.log('Message object', messageObject)
+    return (
+      <li key={index}>
+        <Messages target={props.target} id={messageObject.id} message={messageObject}>{messageObject.title}</Messages>
+      </li>
+    );
+  });
+  console.log('Message array', messageArray);
+  return (
+    <ul>{messageArray}</ul>
+  );
 };
+
+var MessageListContainer = function(props) {
+  console.log('what is in this props from the Message List Container?', props);
+  var messages = EMAILS[props.params.keyTarget];
+  console.log('Messages', messages);
+  return <MessageList target={props.params.keyTarget} message={messages}/>
+};
+
+//Just have this here for reference
+// var MessageList = function(props) {
+//   var messages = props.message;
+//   var message = Object.keys(messages).map(function(message, index) {
+//     var keys = props.message[message];
+//     console.log(message);
+//     return (
+//       <li key={index}>
+//         <Messages message={message}>{message}</Messages>
+//       </li>
+//     );
+//   });
+//   return (
+//     <ul>
+//       {messages}
+//     </ul>
+//   );
+// };
+
+// var MessageListContainer = function() {
+//   return <MessageList message={messages}/>
+// };
 
 var App = function(props) {
   return (
@@ -127,8 +167,9 @@ var routes = (
   <Router history={hashHistory}>
     <Route path='/' component={App}>
       <IndexRoute component={EmailListContainer}/>
-      <Route path=':message' component={MessageListContainer}>
-      </Route>
+      <Route path=':message' component={MessageListContainer}/>
+      <Route path='emails/:keyTarget' component={MessageListContainer}/>
+      <Route path='emails/:keyTarget/:id' component={Message}/>
     </Route>
   </Router>
 );
