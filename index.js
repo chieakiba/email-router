@@ -64,7 +64,7 @@ var EmailList = function(props) {
     var email = props.emails[name];
     return (
       <li key={index}>
-        <Emails>{name}</Emails>
+        <Emails name={name}>{name}</Emails>
       </li>
     );
   });
@@ -79,9 +79,20 @@ var EmailListContainer = function() {
   return <EmailList emails={EMAILS}/>;
 };
 
+var App = function(props) {
+  return (
+    <div>
+      <h1>Emails</h1>
+      <div>{props.children}</div>
+    </div>
+  );
+};
+
 var routes = (
   <Router history={hashHistory}>
-    <Route path='/' component={EmailListContainer}/>
+    <Route path='/' component={App}>
+      <IndexRoute component={EmailListContainer}/>
+    </Route>
   </Router>
 );
 

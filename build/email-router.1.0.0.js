@@ -123,7 +123,7 @@
 	      { key: index },
 	      React.createElement(
 	        Emails,
-	        null,
+	        { name: name },
 	        name
 	      )
 	    );
@@ -139,10 +139,31 @@
 	  return React.createElement(EmailList, { emails: EMAILS });
 	};
 	
+	var App = function App(props) {
+	  return React.createElement(
+	    'div',
+	    null,
+	    React.createElement(
+	      'h1',
+	      null,
+	      'Emails'
+	    ),
+	    React.createElement(
+	      'div',
+	      null,
+	      props.children
+	    )
+	  );
+	};
+	
 	var routes = React.createElement(
 	  Router,
 	  { history: hashHistory },
-	  React.createElement(Route, { path: '/', component: EmailListContainer })
+	  React.createElement(
+	    Route,
+	    { path: '/', component: App },
+	    React.createElement(IndexRoute, { component: EmailListContainer })
+	  )
 	);
 	
 	document.addEventListener('DOMContentLoaded', function () {
